@@ -1,0 +1,39 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        NEW GAME
+      </mat-panel-title>
+      <mat-panel-description>
+        Start a new game
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput type="number" placeholder="Distance" value="{{distance}}"/>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Player 1" value="{{player1.Name}}"/>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Player 2" value="{{player2.Name}}"/>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="startGameClicked()">START</button>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          LOAD
+        </mat-panel-title>
+        <mat-panel-description>
+          Load an ongoing game
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-form-field>
+        <mat-select>
+          <mat-option>Game 1</mat-option>
+          <mat-option>Game 2</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" disabled="true">LOAD</button>
+    </mat-expansion-panel>
+</mat-accordion>

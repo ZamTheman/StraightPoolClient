@@ -1,0 +1,114 @@
+.gameContainer{
+    height: 100%;
+    width: calc(100% - 10px);
+    display: grid;
+    grid-template-columns: 80px 50px auto 50px 80px;
+    grid-template-rows: 50px 50px auto 100px 50px;
+}
+
+.playerInfoRight{
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    text-align: right;
+}
+
+.currentTurnScore{
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    font-size: 4em;
+    font-family: Arial, Helvetica, sans-serif;
+    align-self: center;
+    justify-self: center;
+}
+
+.currentTurnScore h1{
+    margin: 0;
+}
+
+button p{
+    margin: 0;
+}
+
+.tableCount{
+    margin-left: 10px;
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 4;
+    text-align: center;
+}
+
+.tableCount p{
+    font-size: 20px;
+    margin: 5px;
+}
+
+.scoreButtons{
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    align-self: center;
+}
+
+.scoreButtons button{
+    width: 120px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.playerInfoLeft, .playerInfoRight{
+    margin-top: 10px;
+    width: 130px;
+}
+
+.playerInfoLeft p, .playerInfoRight p{
+    margin: 0;
+    color: gray;
+}
+
+.endTurnButtonRow{
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 5;
+    grid-row-end: 6;
+    text-align: center;
+}
+
+.endTurnButtonRow button{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.customTabs .mat-tab-body-wrapper{
+    height: 100%;
+}
+
+.mat-tab-group{
+    height: calc(100% - 50px);
+}
+
+table {
+    width: 100%;
+}
+
+.activePlayer p{
+    font-size: 24px;
+    color: black;
+}
+
+tbody tr.mat-row,
+thead tr.mat-header-row{
+    height: 28px;
+}
+
+.mat-column-turn{
+    width: 25px;
+}
+
+.mat-column-plr1Turn,
+.mat-column-plr1Total,
+.mat-column-plr2Turn,
+.mat-column-plr2Total{
+    width: 21%;
+}

@@ -1,0 +1,40 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+html, body{
+    height: 100%;
+    background-color: rgb(247, 240, 232);
+}
+
+.responsiveArticle{
+    background-color: white;
+    margin-bottom: 10px;
+    padding: 1px 10px;
+    min-height: 70px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.responsiveArticle button{
+    float: left;
+    margin-top: 15px;
+    margin-right: 10px;
+}
+
+.singleItemRow{
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.rowSpace{
+    height: 10vw;
+}
+
+p{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.smallLogo{
+    width: 50px;
+    height: auto;
+}
