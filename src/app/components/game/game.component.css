@@ -112,3 +112,18 @@ thead tr.mat-header-row{
 .mat-column-plr2Total{
     width: 21%;
 }
+
+.statsContainer{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.playerStatsLeft,
+.playerStatsRight{
+    justify-self: center;
+    text-align: center;
+}
+
+.mat-table{
+    margin-top: 5px;
+}

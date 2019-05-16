@@ -1,0 +1,92 @@
+<mat-tab-group class="customTabs">
+  <mat-tab label="Turn" class="fullHeight">
+    <div class="gameContainer">
+      <div class="playerInfoLeft" [ngClass]="{'activePlayer': gameService.GetActivePlayerNumber() === 1}">
+        <p>{{gameService.GetGameState().player1.Name}}</p>
+        <p>Score: {{gameService.GetGameState().plr1Score}}</p>
+        <p>Fouls: {{gameService.GetGameState().plr1Fouls}}</p>
+      </div>
+      <div class="playerInfoRight" [ngClass]="{'activePlayer': gameService.GetActivePlayerNumber() === 2}">
+        <p>{{gameService.GetGameState().player2.Name}}</p>
+        <p>Score: {{gameService.GetGameState().plr2Score}}</p>
+        <p>Fouls: {{gameService.GetGameState().plr2Fouls}}</p>
+      </div>
+      <div class="tableCount">
+        <p>On table: {{gameService.GetGameState().ballsOnTable}}</p>
+        <p>Current turn: {{gameService.CurrentTurn()}}</p>
+      </div>
+      <div class="currentTurnScore">
+        <h1>{{gameService.GetGameState().currentBreak}}</h1>
+      </div>
+      <div class="scoreButtons">
+        <button mat-raised-button color="primary" (click)="plusClicked()">+</button>
+        <button mat-raised-button color="primary" (click)="minusClicked()">-</button>
+        <button mat-raised-button color="primary" (click)="newRackClicked()">NEW RACK</button>
+        <button mat-raised-button color="primary" (click)="newRack15Clicked()">
+          <p>15th BALL</p>
+          <p>POCKETED</p>
+        </button>
+      </div>
+      <div class="endTurnButtonRow">
+        <button mat-raised-button color="accent" (click)="safeClicked()">SAFE</button>
+        <button mat-raised-button color="primary" (click)="missClicked()">MISS</button>
+        <button mat-raised-button color="warn" (click)="foulClicked()">FOUL</button>
+        <button mat-raised-button color="warn" (click)="scratchClicked()">SCRATCH</button>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Table">
+    <table mat-table [dataSource]="gameService.GetDataSource()" class="mat-elevation-z8">
+      <ng-container matColumnDef="turn">
+        <th mat-header-cell *matHeaderCellDef> # </th>
+        <td mat-cell *matCellDef="let element"> {{element.turnId}} </td>
+      </ng-container>  
+      <ng-container matColumnDef="plr1Turn">
+        <th mat-header-cell *matHeaderCellDef> Turn </th>
+        <td mat-cell *matCellDef="let element"> {{element.plr1Turn}} </td>
+      </ng-container>
+      <ng-container matColumnDef="plr1Total">
+        <th mat-header-cell *matHeaderCellDef> Total </th>
+        <td mat-cell *matCellDef="let element"> {{element.plr1Total}} </td>
+      </ng-container>
+      <ng-container matColumnDef="plr2Turn">
+        <th mat-header-cell *matHeaderCellDef> Turn </th>
+        <td mat-cell *matCellDef="let element"> {{element.plr2Turn}} </td>
+      </ng-container>
+      <ng-container matColumnDef="plr2Total">
+        <th mat-header-cell *matHeaderCellDef> Total </th>
+        <td mat-cell *matCellDef="let element"> {{element.plr2Total}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-tab>
+  <mat-tab label="Statistics">
+    <div class="statsContainer">
+      <div class="playerStatsLeft">
+        <h2>{{gameService.GetGameState().player1.Name}}</h2>
+        <p>Score</p>
+        <h3>{{plr1Score}}</h3>
+        <p>Average</p>
+        <h3>{{plr1Avg}}</h3>
+        <p>No safes average</p>
+        <h3>{{plr1NoSfAvg}}</h3>
+        <p>Fouls</p>
+        <h3>{{plr1Fouls}}</h3>
+      </div>
+      <div class="playerStatsRight">
+        <h2>{{gameService.GetGameState().player2.Name}}</h2>
+        <p>Score</p>
+        <h3>{{plr2Score}}</h3>
+        <p>Average</p>
+        <h3>{{plr2Avg}}</h3>
+        <p>No safes average</p>
+        <h3>{{plr2NoSfAvg}}</h3>
+        <p>Fouls</p>
+        <h3>{{plr2Fouls}}</h3>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+

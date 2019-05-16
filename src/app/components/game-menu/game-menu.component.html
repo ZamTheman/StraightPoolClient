@@ -12,10 +12,10 @@
       <input matInput type="number" placeholder="Distance" value="{{distance}}"/>
     </mat-form-field>
     <mat-form-field>
-      <input matInput placeholder="Player 1" value="{{player1.Name}}"/>
+      <input matInput type="text" placeholder="Player 1" [(ngModel)]="player1.Name"/>
     </mat-form-field>
     <mat-form-field>
-      <input matInput placeholder="Player 2" value="{{player2.Name}}"/>
+      <input matInput type="text" placeholder="Player 2" [(ngModel)]="player2.Name"/>
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="startGameClicked()">START</button>
   </mat-expansion-panel>

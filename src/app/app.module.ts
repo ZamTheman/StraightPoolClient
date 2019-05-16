@@ -3,6 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -12,10 +13,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 
 import { AppComponent } from './app.component';
-import { StartComponent } from './start/start.component';
-import { GameMenuComponent } from './game-menu/game-menu.component';
-import { GameComponent } from './game/game.component';
-import { GameService } from './game.service';
+import { StartComponent } from './components/start/start.component';
+import { GameMenuComponent } from './components/game-menu/game-menu.component';
+import { GameComponent } from './components/game/game.component';
+import { GameService } from './services/game.service';
 
 const appRoutes: Routes = [
   { path: 'start', component: StartComponent },
@@ -34,11 +35,12 @@ const appRoutes: Routes = [
   imports: [
     RouterModule.forRoot(
       appRoutes,
-      { enableTracing: true }
+      { enableTracing: false }
     ),
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    FormsModule,
     MatButtonModule,
     MatInputModule,
     MatExpansionModule,
@@ -46,7 +48,7 @@ const appRoutes: Routes = [
     MatTabsModule,
     MatTableModule
   ],
-  providers: [],
+  providers: [GameService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

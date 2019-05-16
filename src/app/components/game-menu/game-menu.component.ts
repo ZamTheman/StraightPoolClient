@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GameService, Player } from '../game.service';
+import { GameService, Player } from '../../services/game.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./game-menu.component.css']
 })
 export class GameMenuComponent implements OnInit {
-  player1: Player;
-  player2: Player;
+  player1: Player = { Name: 'Samuel', Id: -1 };
+  player2: Player = { Name: 'Jesse', Id: -1 };
   distance: number;
 
   constructor(
@@ -17,16 +17,11 @@ export class GameMenuComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.player1 = { Name: 'Samuel', Id: -1 };
-    this.player2 = { Name: 'Jesse', Id: -1 };
     this.distance = 75;
   }
 
   startGameClicked(): void{
-    this.gameService.SetPlayer1(this.player1);
-    this.gameService.SetPlayer2(this.player2);
-    this.gameService.SetDistance(this.distance);
-    this.gameService.SetGameStarted(true);
+    this.gameService.CreateNewGameState(this.player1, this.player2, this.distance);
     this.router.navigate(['/game']);
   }
 
