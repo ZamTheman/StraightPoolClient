@@ -3,6 +3,7 @@
 
 html, body{
     background-color: rgb(247, 240, 232);
+    height: 100%;
 }
 
 .responsiveArticle{

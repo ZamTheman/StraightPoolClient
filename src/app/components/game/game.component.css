@@ -78,7 +78,8 @@ button p{
 }
 
 .customTabs .mat-tab-body-wrapper{
-    height: 100%;
+    height: calc(100% - 20px);
+    margin-bottom: 20px;
 }
 
 .mat-tab-group{
