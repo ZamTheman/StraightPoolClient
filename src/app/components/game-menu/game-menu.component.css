@@ -2,6 +2,6 @@ button{
     display: block;
 }
 
-mat-expansion-panel{
+mat-card{
     margin-top: 10px;
 }

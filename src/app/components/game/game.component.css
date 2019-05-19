@@ -33,8 +33,8 @@ button p{
 
 .tableCount{
     margin-left: 10px;
-    grid-column-start: 2;
-    grid-column-end: 5;
+    grid-column-start: 1;
+    grid-column-end: 6;
     grid-row-start: 4;
     text-align: center;
 }
@@ -73,11 +73,8 @@ button p{
     grid-row-start: 5;
     grid-row-end: 6;
     text-align: center;
-}
-
-.endTurnButtonRow button{
-    display: inline-block;
-    margin-right: 5px;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .customTabs .mat-tab-body-wrapper{
@@ -126,4 +123,9 @@ thead tr.mat-header-row{
 
 .mat-table{
     margin-top: 5px;
+}
+
+button.quitButton{
+    position: absolute;
+    right: 10px;
 }

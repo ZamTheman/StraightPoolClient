@@ -1,5 +1,5 @@
 export interface Player{
-  Id: number;
+  Id: string;
   Name: string;
 }
 
@@ -51,6 +51,7 @@ export enum EndOfTurnType{
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,7 @@ export class GameService {
     nrFouls: 0
   }
   
-  constructor() {
+  constructor(private storageService: StorageService){
     this.Plr1StatsChanged = new Subject<any>();
     this.Plr2StatsChanged = new Subject<any>();
   }
@@ -93,10 +94,6 @@ export class GameService {
 
   public GetDistance(): number{
     return this.gameState.distance;
-  }
-
-  public GetGameStarted(): boolean{
-    return (this.gameState !== null && this.gameState !== undefined);
   }
 
   public GetPlayerStats(plr: number): PlayerStats{
@@ -144,6 +141,10 @@ export class GameService {
         noSafesAverage: avrScoreWithoutSafes,
         nrFouls: nrFouls
       }
+  }
+
+  public SetGameState(gameState: GameState): void{
+    this.gameState = gameState;
   }
 
   public CreateNewGameState(plr1: Player, plr2: Player, distance: number): void{
@@ -231,6 +232,9 @@ export class GameService {
           break;
         case EndOfTurnType.Foul:
           this.gameState.plr1Score--;
+          if (this.gameState.currentBreak > 0){
+            this.gameState.plr1Fouls = 0;
+          }
           this.gameState.plr1Fouls++;
           this.gameState.table[this.CurrentTurnIndex()].plr1TurnFoul = true;
           break;
@@ -248,6 +252,9 @@ export class GameService {
             break;
           case EndOfTurnType.Foul:
             this.gameState.plr2Score--;
+            if (this.gameState.currentBreak > 0){
+              this.gameState.plr2Fouls = 0;
+            }
             this.gameState.plr2Fouls++;
             this.gameState.table[this.CurrentTurnIndex()].plr2TurnFoul = true;
             break;
@@ -263,6 +270,8 @@ export class GameService {
     } else {
       this.Plr1StatsChanged.next();
     }
+
+    this.storageService.StoreGameState(this.gameState);
   }
 
   public GetDataSource(): MatTableDataSource<DSTurn>{

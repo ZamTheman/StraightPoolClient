@@ -4,6 +4,10 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../environments/environment';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -11,12 +15,14 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppComponent } from './app.component';
 import { StartComponent } from './components/start/start.component';
 import { GameMenuComponent } from './components/game-menu/game-menu.component';
 import { GameComponent } from './components/game/game.component';
 import { GameService } from './services/game.service';
+import { StorageService } from './services/storage.service';
 
 const appRoutes: Routes = [
   { path: 'start', component: StartComponent },
@@ -40,15 +46,22 @@ const appRoutes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireDatabaseModule,
     FormsModule,
     MatButtonModule,
     MatInputModule,
     MatExpansionModule,
     MatSelectModule,
     MatTabsModule,
-    MatTableModule
+    MatTableModule,
+    MatCardModule
   ],
-  providers: [GameService],
+  providers: [
+    GameService,
+    StorageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
