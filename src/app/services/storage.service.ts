@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { GameState } from './game.service';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Observable } from 'rxjs';
-import { Player } from '../models/player';
-import { ROUTER_FORROOT_GUARD } from '@angular/router/src/router_module';
 
 @Injectable({
   providedIn: 'root'

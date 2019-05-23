@@ -1,9 +1,8 @@
 .gameContainer{
     height: 100%;
-    width: calc(100% - 10px);
     display: grid;
+    grid-template-rows: 100px auto 50px 50px;
     grid-template-columns: 80px 50px auto 50px 80px;
-    grid-template-rows: 50px 50px auto 100px 50px;
 }
 
 .playerInfoRight{
@@ -16,74 +15,54 @@
 .currentTurnScore{
     grid-column-start: 1;
     grid-column-end: 4;
-    grid-row-start: 3;
+    grid-row-start: 2;
     font-size: 4em;
     font-family: Arial, Helvetica, sans-serif;
     align-self: center;
     justify-self: center;
 }
 
-.currentTurnScore h1{
-    margin: 0;
-}
-
-button p{
-    margin: 0;
-}
-
 .tableCount{
-    margin-left: 10px;
     grid-column-start: 1;
     grid-column-end: 6;
-    grid-row-start: 4;
+    grid-row-start: 3;
     text-align: center;
-}
-
-.tableCount p{
-    font-size: 20px;
-    margin: 5px;
+    align-self: center;
 }
 
 .scoreButtons{
     grid-column-start: 4;
-    grid-column-end: 5;
-    grid-row-start: 3;
-    align-self: center;
+    grid-column-end: 6;
+    grid-row-start: 2;
+    display: grid;
+    width: calc(100% - 5px);
+    grid-template-rows: auto auto auto auto;
 }
 
 .scoreButtons button{
-    width: 120px;
+    height: 50px;
+    widows: 100%;
     display: block;
-    margin-bottom: 10px;
+    float: right;
 }
 
 .playerInfoLeft, .playerInfoRight{
-    margin-top: 10px;
     width: 130px;
 }
 
 .playerInfoLeft p, .playerInfoRight p{
-    margin: 0;
     color: gray;
 }
 
 .endTurnButtonRow{
+    height: 40px;
     grid-column-start: 1;
     grid-column-end: 6;
-    grid-row-start: 5;
-    grid-row-end: 6;
+    grid-row-start: 4;
+    grid-row-end: 5;
     text-align: center;
     display: flex;
     justify-content: space-evenly;
-}
-
-.customTabs .mat-tab-body-wrapper{
-    height: calc(100% - 20px);
-    margin-bottom: 20px;
-}
-
-.mat-tab-group{
-    height: calc(100% - 50px);
 }
 
 table {
@@ -123,10 +102,28 @@ thead tr.mat-header-row{
 }
 
 .mat-table{
-    margin-top: 5px;
+    padding-top: 5px;
 }
 
 button.quitButton{
     position: absolute;
     right: 10px;
+    top: 10px;
+}
+
+.mat-tab-group{
+    height: calc(100% - 60px);
+}
+
+.mat-tab-body-wrapper{
+    height: 100%;
+    padding: 10px;
+}
+
+p, h1{
+    margin: 0;
+}
+
+.tableCount p {
+    display: inline;
 }

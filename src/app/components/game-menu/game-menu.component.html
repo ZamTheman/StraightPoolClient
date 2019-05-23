@@ -1,7 +1,7 @@
 <mat-card>
   <h3>New game</h3>
   <mat-form-field>
-    <input matInput type="number" placeholder="Distance" value="{{distance}}"/>
+    <input matInput type="number" placeholder="Distance" [(ngModel)]="distance"/>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Player 1</mat-label>

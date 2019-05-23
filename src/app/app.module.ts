@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppComponent } from './app.component';
 import { StartComponent } from './components/start/start.component';
@@ -23,6 +24,7 @@ import { GameMenuComponent } from './components/game-menu/game-menu.component';
 import { GameComponent } from './components/game/game.component';
 import { GameService } from './services/game.service';
 import { StorageService } from './services/storage.service';
+import { GamewondialogComponent } from './components/gamewondialog/gamewondialog.component';
 
 const appRoutes: Routes = [
   { path: 'start', component: StartComponent },
@@ -36,7 +38,11 @@ const appRoutes: Routes = [
     AppComponent,
     StartComponent,
     GameMenuComponent,
-    GameComponent
+    GameComponent,
+    GamewondialogComponent
+  ],
+  entryComponents: [
+    GamewondialogComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -56,7 +62,11 @@ const appRoutes: Routes = [
     MatSelectModule,
     MatTabsModule,
     MatTableModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule
+  ],
+  exports: [
+    GamewondialogComponent
   ],
   providers: [
     GameService,

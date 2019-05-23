@@ -4,6 +4,7 @@
 html, body{
     background-color: rgb(247, 240, 232);
     height: 100%;
+    margin: 0;
 }
 
 .responsiveArticle{
@@ -30,8 +31,12 @@ html, body{
     height: 10vw;
 }
 
-p{
+h1, h2, h3, p{
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.mat-card{
+    margin: 10px;
 }
 
 .smallLogo{

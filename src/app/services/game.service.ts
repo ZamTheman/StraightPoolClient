@@ -9,7 +9,13 @@ export interface GameState{
   currentBreak: number,
   ballsOnTable: number,
   player1: Player,
+  plr1HighBreak: number;
+  plr1TotSafes: number;
+  plr1TotFouls: number;
   player2: Player,
+  plr2HighBreak: number;
+  plr2TotSafes: number;
+  plr2TotFouls: number;
   plr1Score: number;
   plr1Fouls: number;
   plr2Score: number;
@@ -37,9 +43,11 @@ export interface DSTurn{
 
 export interface PlayerStats{
   score: number;
+  highBreak: number;
   average: number;
   noSafesAverage: number;
   nrFouls: number;
+  nrSafes: number;
 }
 
 export enum EndOfTurnType{
@@ -57,26 +65,40 @@ import { StorageService } from './storage.service';
   providedIn: 'root'
 })
 export class GameService {
-  public Plr1StatsChanged: Subject<any>;
-  public Plr2StatsChanged: Subject<any>;
+  public PlrStatsChanged: Subject<boolean>;
+  public DistanceReached: Subject<boolean>;
+  public GameEnded: Subject<boolean>;
+  public ScoreChanged: Subject<boolean>;
 
   private gameState: GameState;
+  private endGameAfterTurn: boolean = false;
   private EmptyStats: PlayerStats = {
     score: 0,
+    highBreak: 0,
     average: 0,
     noSafesAverage: 0,
-    nrFouls: 0
+    nrFouls: 0,
+    nrSafes: 0
   }
   
   constructor(private storageService: StorageService){
-    this.Plr1StatsChanged = new Subject<any>();
-    this.Plr2StatsChanged = new Subject<any>();
+    this.PlrStatsChanged = new Subject<boolean>();
+    this.DistanceReached = new Subject<boolean>();
+    this.GameEnded = new Subject<boolean>();
+    this.ScoreChanged = new Subject<boolean>();
   }
 
   public CurrentTurn = () =>  this.gameState.table.length;
   public CurrentTurnIndex = () =>  this.gameState.table.length - 1;
 
   public GetGameState(): GameState{
+    if (this.gameState === undefined)
+      this.CreateNewGameState(
+        { Name: '', Id: '-1' },
+        { Name: '', Id: '-1' },
+        10000
+      )
+      
     return this.gameState;
   }
 
@@ -85,11 +107,13 @@ export class GameService {
   }
 
   public GetPlayerOne(): Player{
-    return this.gameState.player1;
+    if (this.gameState !== undefined)
+      return this.gameState.player1;
   }
 
   public GetPlayerTwo(): Player{
-    return this.gameState.player2;
+    if (this.gameState !== undefined)
+      return this.gameState.player2;
   }
 
   public GetDistance(): number{
@@ -119,15 +143,9 @@ export class GameService {
         if (this.gameState.table[i].plr1TurnSafe && this.gameState.table[i].plr1TurnScore === 0){
           nrTurnWithNoSafes--;
         }
-        if (this.gameState.table[i].plr1TurnFoul){
-          nrFouls++;
-        }
       } else {
         if (this.gameState.table[i].plr2TurnSafe && this.gameState.table[i].plr2TurnScore === 0){
           nrTurnWithNoSafes--;
-        }
-        if (this.gameState.table[i].plr2TurnFoul){
-          nrFouls++;
         }
       }
     }
@@ -137,14 +155,12 @@ export class GameService {
     
     return { 
         score: plr === 1 ? this.gameState.plr1Score : this.gameState.plr2Score,
+        highBreak: plr === 1 ? this.gameState.plr1HighBreak : this.gameState.plr2HighBreak,
         average: avrScore,
         noSafesAverage: avrScoreWithoutSafes,
-        nrFouls: nrFouls
+        nrFouls: plr === 1 ? this.gameState.plr1TotFouls : this.gameState.plr2TotFouls,
+        nrSafes: plr === 1 ? this.gameState.plr1TotSafes : this.gameState.plr2TotSafes
       }
-  }
-
-  public SetGameState(gameState: GameState): void{
-    this.gameState = gameState;
   }
 
   public CreateNewGameState(plr1: Player, plr2: Player, distance: number): void{
@@ -154,11 +170,17 @@ export class GameService {
       currentBreak: 0,
       ballsOnTable: 15,
       player1: plr1,
-      player2: plr2,
       plr1Score: 0,
-      plr2Score: 0,
       plr1Fouls: 0,
+      plr1HighBreak: 0,
+      plr1TotFouls: 0,
+      plr1TotSafes: 0,
+      player2: plr2,
+      plr2Score: 0,
       plr2Fouls: 0,
+      plr2HighBreak: 0,
+      plr2TotFouls: 0,
+      plr2TotSafes: 0,
       table: [
         { 
           turnId: 1,
@@ -171,6 +193,10 @@ export class GameService {
         }
       ]
     }
+  }
+
+  public SetGameState(gameState: GameState): void{
+    this.gameState = gameState;
   }
 
   public IncrementPlayerScore(): void{
@@ -187,6 +213,13 @@ export class GameService {
       this.gameState.plr2Score++;
       this.gameState.table[this.CurrentTurnIndex()].plr2TurnScore++;
     }
+
+    if (this.gameState.plr1Score >= this.gameState.distance
+      || this.gameState.plr1Score >= this.gameState.distance){
+      this.DistanceReached.next(true);
+    }
+
+    this.ScoreChanged.next();
   }
 
   public DecrementPlayerScore(): void{
@@ -203,6 +236,8 @@ export class GameService {
       this.gameState.plr2Score--;
       this.gameState.table[this.CurrentTurnIndex()].plr2TurnScore--;
     }
+
+    this.ScoreChanged.next();
   }
   
   public NewRack(lastBallPocketed: boolean){
@@ -218,6 +253,13 @@ export class GameService {
     }
     
     this.gameState.ballsOnTable = 15;
+
+    if (this.gameState.plr1Score >= this.gameState.distance
+      || this.gameState.plr1Score >= this.gameState.distance){
+      this.DistanceReached.next(true);
+    }
+
+    this.ScoreChanged.next();
   }
   
   public EndPlayerTurn(endType: EndOfTurnType): void{
@@ -225,6 +267,7 @@ export class GameService {
       switch (endType){
         case EndOfTurnType.Safe:
           this.gameState.plr1Fouls = 0;
+          this.gameState.plr1TotSafes++;
           this.gameState.table[this.CurrentTurnIndex()].plr1TurnSafe = true;
           break;
         case EndOfTurnType.Miss:
@@ -232,6 +275,7 @@ export class GameService {
           break;
         case EndOfTurnType.Foul:
           this.gameState.plr1Score--;
+          this.gameState.plr1TotFouls++;
           if (this.gameState.currentBreak > 0){
             this.gameState.plr1Fouls = 0;
           }
@@ -240,11 +284,15 @@ export class GameService {
           break;
       }
 
+      if (this.gameState.currentBreak > this.gameState.plr1HighBreak)
+        this.gameState.plr1HighBreak = this.gameState.currentBreak;
+
       this.gameState.currentPlayer = 2;
     } else{
         switch (endType){
           case EndOfTurnType.Safe:
             this.gameState.plr2Fouls = 0;
+            this.gameState.plr2TotSafes++;
             this.gameState.table[this.CurrentTurnIndex()].plr2TurnSafe = true;
             break;
           case EndOfTurnType.Miss:
@@ -252,6 +300,7 @@ export class GameService {
             break;
           case EndOfTurnType.Foul:
             this.gameState.plr2Score--;
+            this.gameState.plr2TotFouls++;
             if (this.gameState.currentBreak > 0){
               this.gameState.plr2Fouls = 0;
             }
@@ -260,17 +309,14 @@ export class GameService {
             break;
           }
 
+        if (this.gameState.currentBreak > this.gameState.plr2HighBreak)
+          this.gameState.plr2HighBreak = this.gameState.currentBreak;
+
         this.AddTurn();
     }
 
     this.gameState.currentBreak = 0;
-    
-    if (this.gameState.currentPlayer === 1){
-      this.Plr2StatsChanged.next(); 
-    } else {
-      this.Plr1StatsChanged.next();
-    }
-
+    this.PlrStatsChanged.next();
     this.storageService.StoreGameState(this.gameState);
   }
 
@@ -335,5 +381,15 @@ export class GameService {
     }
 
     return [plr1TurnString, plr2TurnString];
+  }
+
+  public EndGameAfterTurn(): void{
+    this.endGameAfterTurn = true;
+    console.log('end game after turn clicked');
+  }
+
+  public EndGame(): void{
+    console.log('end game clicked');
+    this.GameEnded.next(true);
   }
 }

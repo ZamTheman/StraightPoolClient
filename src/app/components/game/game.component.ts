@@ -1,8 +1,17 @@
+export interface StatRow{
+  statType: string,
+  plr1StatVal: number,
+  plr2StatVal: number
+}
+
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
-import { GameService, EndOfTurnType } from '../../services/game.service';
+import { GameService, EndOfTurnType, GameState } from '../../services/game.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/services/storage.service';
+import { MatDialog } from '@angular/material/dialog';
+import { GamewondialogComponent } from '../gamewondialog/gamewondialog.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-game',
@@ -12,57 +21,87 @@ import { StorageService } from 'src/app/services/storage.service';
 })
 export class GameComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['turn', 'plr1Turn', 'plr1Total', 'plr2Turn', 'plr2Total'];
+  displayedStatsColumns: string[] = ['statType', 'plr1StatVal', 'plr2StatVal'];
   plr1Name: string = '';
   plr1Score: number = 0;
-  plr1Avg: number = 0;
-  plr1NoSfAvg: number = 0;
-  plr1Fouls: number = 0;
   plr2Name: string = '';
   plr2Score: number = 0;
-  plr2Avg: number = 0;
-  plr2NoSfAvg: number = 0;
-  plr2Fouls: number = 0;
-
-  plr1StatsSub: Subscription;
-  plr2StatsSub: Subscription;
+  statsDataSource: MatTableDataSource<StatRow>;
+  gameState: GameState;
+  
+  plrStatsSub: Subscription;
+  scoreChangedSub: Subscription;
+  distReachedSub: Subscription;
+  gameEnded: Subscription;
   
   constructor(
     private gameService: GameService,
     private storageService: StorageService,
-    private router: Router) { }
+    private router: Router,
+    public dialog: MatDialog) { }
     
   ngOnInit(): void {
-    if (this.gameService.GetGameState() === undefined)
-    {
+    if (this.gameService.GetGameState().distance === 10000) {
       this.router.navigate(['/gamemenu']);
+    } else {
+      this.plrStatsSub = this.gameService.PlrStatsChanged.subscribe(
+        () => this.UpdatePlrStats()
+      );
+      this.distReachedSub = this.gameService.DistanceReached.subscribe(() => {
+        this.openDialog();
+      });
+      this.gameEnded = this.gameService.GameEnded.subscribe(() => 
+        this.endGame()  
+      );
+      this.scoreChangedSub = this.gameService.ScoreChanged.subscribe(() => 
+        this.UpdatePlrStats()
+      );
+        
+      this.statsDataSource = this.getEmptyStatDataSourcs();
+      this.UpdatePlrStats();
+      this.plr1Name = this.gameService.GetPlayerOne().Name;
+      this.plr2Name = this.gameService.GetPlayerTwo().Name;
     }
-    this.plr1Name = this.gameService.GetPlayerOne().Name;
-    this.plr2Name = this.gameService.GetPlayerTwo().Name;
-    
-    this.plr1StatsSub = this.gameService.Plr1StatsChanged.subscribe(() => this.UpdatePlrStats(1));
-    this.plr2StatsSub = this.gameService.Plr2StatsChanged.subscribe(() => this.UpdatePlrStats(2));
   }
   
   ngOnDestroy(): void {
-    if (this.plr1StatsSub !== undefined && this.plr2StatsSub !== undefined){
-      this.plr1StatsSub.unsubscribe();
-      this.plr2StatsSub.unsubscribe();
-    }
+    if (this.plrStatsSub !== undefined)
+      this.plrStatsSub.unsubscribe();
+
+    if (this.distReachedSub !== undefined)
+      this.distReachedSub.unsubscribe();
+    
+    if (this.gameEnded !== undefined)
+      this.gameEnded.unsubscribe();
   }
 
-  UpdatePlrStats(plr: number){
-    const plrStats = this.gameService.GetPlayerStats(plr);
-    if (plr === 1) {
-      this.plr1Score = plrStats.score;
-      this.plr1Avg = plrStats.average;
-      this.plr1NoSfAvg = plrStats.noSafesAverage;
-      this.plr1Fouls = plrStats.nrFouls;
-    } else {
-      this.plr2Score = plrStats.score;
-      this.plr2Avg = plrStats.average;
-      this.plr2NoSfAvg = plrStats.noSafesAverage;
-      this.plr2Fouls = plrStats.nrFouls;
-    }
+  openDialog(): void{
+    const dialogRef = this.dialog.open(GamewondialogComponent, {
+      width: '250px'
+    });
+
+    dialogRef.afterClosed().subscribe(() =>
+      this.gameService.EndGameAfterTurn()
+    )
+  }
+
+  UpdatePlrStats(){
+    const plr1Stats = this.gameService.GetPlayerStats(1);
+    const plr2Stats = this.gameService.GetPlayerStats(2);
+    
+    this.statsDataSource.data[0].plr1StatVal = plr1Stats.score;
+    this.statsDataSource.data[1].plr1StatVal = plr1Stats.highBreak;
+    this.statsDataSource.data[2].plr1StatVal = plr1Stats.average;
+    this.statsDataSource.data[3].plr1StatVal = plr1Stats.noSafesAverage;
+    this.statsDataSource.data[4].plr1StatVal = plr1Stats.nrFouls;
+    this.statsDataSource.data[5].plr1StatVal = plr1Stats.nrSafes;
+
+    this.statsDataSource.data[0].plr2StatVal = plr2Stats.score;
+    this.statsDataSource.data[1].plr2StatVal = plr2Stats.highBreak;
+    this.statsDataSource.data[2].plr2StatVal = plr2Stats.average;
+    this.statsDataSource.data[3].plr2StatVal = plr2Stats.noSafesAverage;
+    this.statsDataSource.data[4].plr2StatVal = plr2Stats.nrFouls;
+    this.statsDataSource.data[5].plr2StatVal = plr2Stats.nrSafes;
   }
 
   quitClicked(): void{
@@ -105,4 +144,23 @@ export class GameComponent implements OnInit, OnDestroy {
   getPlayer1Stats = () => this.gameService.GetPlayerStats(1);
 
   getPlayer2Stats = () => this.gameService.GetPlayerStats(2);
+
+  private getEmptyStatDataSourcs(): MatTableDataSource<StatRow>{
+    let statsDataSource = new MatTableDataSource<StatRow>();
+    statsDataSource.data.push({ statType: 'Score', plr1StatVal: 0, plr2StatVal: 0 });
+    statsDataSource.data.push({ statType: 'High break', plr1StatVal: 0, plr2StatVal: 0 });
+    statsDataSource.data.push({ statType: 'Average', plr1StatVal: 0, plr2StatVal: 0 });
+    statsDataSource.data.push({ statType: 'No safe average', plr1StatVal: 0, plr2StatVal: 0 });
+    statsDataSource.data.push({ statType: 'Nr fouls', plr1StatVal: 0, plr2StatVal: 0 });
+    statsDataSource.data.push({ statType: 'Nr safes', plr1StatVal: 0, plr2StatVal: 0 });
+
+    console.log(this.plr2Name);
+
+    return statsDataSource;
+  }
+
+  private endGame(): void{
+    console.log('In end game');
+    this.router.navigate(['/start']);
+  }
 }
