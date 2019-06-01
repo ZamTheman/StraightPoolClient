@@ -1,65 +1,8 @@
-export interface Player{
-  Id: string;
-  Name: string;
-}
-
-export interface GameState{
-  distance: number,
-  currentPlayer: number;
-  currentBreak: number,
-  ballsOnTable: number,
-  player1: Player,
-  plr1HighBreak: number;
-  plr1TotSafes: number;
-  plr1TotFouls: number;
-  player2: Player,
-  plr2HighBreak: number;
-  plr2TotSafes: number;
-  plr2TotFouls: number;
-  plr1Score: number;
-  plr1Fouls: number;
-  plr2Score: number;
-  plr2Fouls: number;
-  table: Turn[]
-}
-
-export interface Turn{
-  turnId: number;
-  plr1TurnScore: number;
-  plr1TurnFoul: boolean;
-  plr1TurnSafe: boolean;
-  plr2TurnScore: number;
-  plr2TurnFoul: boolean;
-  plr2TurnSafe: boolean;
-}
-
-export interface DSTurn{
-  turnId: number;
-  plr1Turn: string;
-  plr1Total: number;
-  plr2Turn: string;
-  plr2Total: number;
-}
-
-export interface PlayerStats{
-  score: number;
-  highBreak: number;
-  average: number;
-  noSafesAverage: number;
-  nrFouls: number;
-  nrSafes: number;
-}
-
-export enum EndOfTurnType{
-  Safe,
-  Miss,
-  Foul
-}
-
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
 import { StorageService } from './storage.service';
+import { GameState, PlayerStats, Player, EndOfTurnType, DSTurn, Turn } from '../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -78,7 +21,8 @@ export class GameService {
     average: 0,
     noSafesAverage: 0,
     nrFouls: 0,
-    nrSafes: 0
+    nrSafes: 0,
+    nrTurns: 0,
   }
   
   constructor(private storageService: StorageService){
@@ -159,7 +103,8 @@ export class GameService {
         average: avrScore,
         noSafesAverage: avrScoreWithoutSafes,
         nrFouls: plr === 1 ? this.gameState.plr1TotFouls : this.gameState.plr2TotFouls,
-        nrSafes: plr === 1 ? this.gameState.plr1TotSafes : this.gameState.plr2TotSafes
+        nrSafes: plr === 1 ? this.gameState.plr1TotSafes : this.gameState.plr2TotSafes,
+        nrTurns: nrTurns
       }
   }
 
@@ -215,7 +160,7 @@ export class GameService {
     }
 
     if (this.gameState.plr1Score >= this.gameState.distance
-      || this.gameState.plr1Score >= this.gameState.distance){
+      || this.gameState.plr2Score >= this.gameState.distance){
       this.DistanceReached.next(true);
     }
 
@@ -318,8 +263,10 @@ export class GameService {
     this.gameState.currentBreak = 0;
     this.PlrStatsChanged.next();
     this.storageService.StoreGameState(this.gameState);
+    if (this.endGameAfterTurn)
+      this.EndGame();
   }
-
+  
   public GetDataSource(): MatTableDataSource<DSTurn>{
     let dataSource = new MatTableDataSource<DSTurn>();
     this.gameState.table.forEach(tr => {
@@ -337,6 +284,14 @@ export class GameService {
     return dataSource;
   }
   
+  public EndGameAfterTurn(): void{
+    this.endGameAfterTurn = true;
+  }
+
+  public EndGame(): void{
+    this.GameEnded.next(true);
+  }
+
   private AddTurn(): void{
     this.gameState.table.push(
       {
@@ -383,13 +338,4 @@ export class GameService {
     return [plr1TurnString, plr2TurnString];
   }
 
-  public EndGameAfterTurn(): void{
-    this.endGameAfterTurn = true;
-    console.log('end game after turn clicked');
-  }
-
-  public EndGame(): void{
-    console.log('end game clicked');
-    this.GameEnded.next(true);
-  }
 }

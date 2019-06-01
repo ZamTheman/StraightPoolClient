@@ -25,10 +25,12 @@ import { GameComponent } from './components/game/game.component';
 import { GameService } from './services/game.service';
 import { StorageService } from './services/storage.service';
 import { GamewondialogComponent } from './components/gamewondialog/gamewondialog.component';
+import { GamesummaryComponent } from './components/gamesummary/gamesummary.component';
 
 const appRoutes: Routes = [
   { path: 'start', component: StartComponent },
   { path: 'gamemenu', component: GameMenuComponent },
+  { path: 'gamesummary', component: GamesummaryComponent },
   { path: 'game', component: GameComponent },
   { path: '', redirectTo: '/start', pathMatch: 'full' }
 ]
@@ -39,7 +41,8 @@ const appRoutes: Routes = [
     StartComponent,
     GameMenuComponent,
     GameComponent,
-    GamewondialogComponent
+    GamewondialogComponent,
+    GamesummaryComponent
   ],
   entryComponents: [
     GamewondialogComponent

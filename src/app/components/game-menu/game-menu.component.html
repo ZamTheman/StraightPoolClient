@@ -6,13 +6,13 @@
   <mat-form-field>
     <mat-label>Player 1</mat-label>
     <mat-select [(ngModel)]="selectedPlayer1">
-      <mat-option *ngFor="let player of dbPlayers" [value]="player.name">{{player.name}}</mat-option>
+      <mat-option *ngFor="let player of dbPlayers" [value]="player">{{player.Name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Player 2</mat-label>
     <mat-select [(ngModel)]="selectedPlayer2">
-      <mat-option *ngFor="let player of dbPlayers" [value]="player.name">{{player.name}}</mat-option>
+      <mat-option *ngFor="let player of dbPlayers" [value]="player">{{player.Name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <button mat-raised-button color="primary" (click)="startGameClicked()">START</button>

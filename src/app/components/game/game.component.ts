@@ -1,17 +1,12 @@
-export interface StatRow{
-  statType: string,
-  plr1StatVal: number,
-  plr2StatVal: number
-}
-
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
-import { GameService, EndOfTurnType, GameState } from '../../services/game.service';
+import { GameService } from '../../services/game.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/services/storage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { GamewondialogComponent } from '../gamewondialog/gamewondialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { GameState, StatRow, EndOfTurnType } from 'src/app/models/interfaces';
 
 @Component({
   selector: 'app-game',
@@ -154,13 +149,10 @@ export class GameComponent implements OnInit, OnDestroy {
     statsDataSource.data.push({ statType: 'Nr fouls', plr1StatVal: 0, plr2StatVal: 0 });
     statsDataSource.data.push({ statType: 'Nr safes', plr1StatVal: 0, plr2StatVal: 0 });
 
-    console.log(this.plr2Name);
-
     return statsDataSource;
   }
 
   private endGame(): void{
-    console.log('In end game');
-    this.router.navigate(['/start']);
+    this.router.navigate(['/gamesummary']);
   }
 }

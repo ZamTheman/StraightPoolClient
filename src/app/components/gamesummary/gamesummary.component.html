@@ -1,0 +1,19 @@
+<div class="tableContainer">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="statType">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element"> {{element.statType}} </td>
+    </ng-container>  
+    <ng-container matColumnDef="plr1StatVal">
+      <th mat-header-cell *matHeaderCellDef>{{plr1Name}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.plr1StatVal}} </td>
+    </ng-container>
+    <ng-container matColumnDef="plr2StatVal">
+      <th mat-header-cell *matHeaderCellDef>{{plr2Name}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.plr2StatVal}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedStatsColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedStatsColumns;"></tr>
+  </table>
+</div>
+<button mat-raised-button color='primary' (click)="okButtonClicked()">OK</button>

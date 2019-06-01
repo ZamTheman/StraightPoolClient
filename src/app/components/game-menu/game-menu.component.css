@@ -5,3 +5,7 @@ button{
 mat-card{
     margin-top: 10px;
 }
+
+mat-form-field{
+    width: 100%;
+}
