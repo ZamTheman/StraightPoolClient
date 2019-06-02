@@ -109,6 +109,7 @@ export class GameService {
   }
 
   public CreateNewGameState(plr1: Player, plr2: Player, distance: number): void{
+    this.endGameAfterTurn = false;
     this.gameState = {
       distance: distance,
       currentPlayer: 1,
@@ -264,7 +265,7 @@ export class GameService {
     this.PlrStatsChanged.next();
     this.storageService.StoreGameState(this.gameState);
     if (this.endGameAfterTurn)
-      this.EndGame();
+      this.EndGame(false);
   }
   
   public GetDataSource(): MatTableDataSource<DSTurn>{
@@ -288,7 +289,19 @@ export class GameService {
     this.endGameAfterTurn = true;
   }
 
-  public EndGame(): void{
+  public EndGame(addTurn: boolean): void{
+    if (addTurn){
+      if (this.gameState.currentPlayer === 1
+        && this.gameState.currentBreak > this.gameState.plr1HighBreak){
+          this.gameState.plr1HighBreak = this.gameState.currentBreak;
+      } else if (this.gameState.currentPlayer === 2
+        && this.gameState.currentBreak > this.gameState.plr2HighBreak){
+          this.gameState.plr2HighBreak = this.gameState.currentBreak;
+        }
+      
+      this.AddTurn();
+    }
+    
     this.GameEnded.next(true);
   }
 

@@ -26,7 +26,7 @@ export class GamewondialogComponent implements OnInit {
   }
 
   endGameClicked(): void{
-    this.gameService.EndGame();
+    this.gameService.EndGame(true);
     this.dialogRef.close();
   }
 }

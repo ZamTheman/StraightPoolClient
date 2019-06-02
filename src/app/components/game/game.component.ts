@@ -15,7 +15,7 @@ import { GameState, StatRow, EndOfTurnType } from 'src/app/models/interfaces';
   encapsulation: ViewEncapsulation.None
 })
 export class GameComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['turn', 'plr1Turn', 'plr1Total', 'plr2Turn', 'plr2Total'];
+  displayedColumns: string[] = ['turn', 'plr1Turn', 'plr2Turn'];
   displayedStatsColumns: string[] = ['statType', 'plr1StatVal', 'plr2StatVal'];
   plr1Name: string = '';
   plr1Score: number = 0;
