@@ -26,6 +26,7 @@ import { GameService } from './services/game.service';
 import { StorageService } from './services/storage.service';
 import { GamewondialogComponent } from './components/gamewondialog/gamewondialog.component';
 import { GamesummaryComponent } from './components/gamesummary/gamesummary.component';
+import { StatisticsComponent } from './src/app/components/statistics/statistics.component';
 
 const appRoutes: Routes = [
   { path: 'start', component: StartComponent },
@@ -42,7 +43,8 @@ const appRoutes: Routes = [
     GameMenuComponent,
     GameComponent,
     GamewondialogComponent,
-    GamesummaryComponent
+    GamesummaryComponent,
+    StatisticsComponent
   ],
   entryComponents: [
     GamewondialogComponent
